@@ -1,12 +1,9 @@
 <?php 
-  
 add_action('wp_ajax_update_booking_status_ajax', 'handle_booking_status_update_ajax');
 add_action('wp_ajax_nopriv_update_booking_status_ajax', 'handle_booking_status_update_ajax');
 
+// ... (rest of the code) ...
 function handle_booking_status_update_ajax() {
-    error_log("AJAX request received"); // Check if AJAX request is received
-error_log("Order ID: " . $order_id); // Check the received order ID
-
     // Security Check (Nonce Verification)
     check_ajax_referer('update_booking_status_nonce', 'security');
 
@@ -19,13 +16,16 @@ error_log("Order ID: " . $order_id); // Check the received order ID
         wp_die();
     }
 
+    // Get new status
+    $newStatus = isset($_POST['status']) ? sanitize_text_field($_POST['status']) : '';
+
     // Database Update
     global $wpdb;
     $table_name = $wpdb->prefix . 'jet_apartment_bookings';
 
     $result = $wpdb->update(
         $table_name,
-        array('status' => 'processing'),
+        array('status' => $newStatus), // Use the new status
         array('order_id' => $order_id),
         array('%s'),
         array('%d')
@@ -40,6 +40,7 @@ error_log("Order ID: " . $order_id); // Check the received order ID
     wp_die(); // Terminate AJAX request
 }
 
+
 function enqueue_booking_update_script() {
     wp_enqueue_script('booking-update', get_stylesheet_directory_uri() . '/booking-update.js', array('jquery'), '1.0', true);
 
@@ -51,6 +52,4 @@ function enqueue_booking_update_script() {
 }
 
 add_action('wp_enqueue_scripts', 'enqueue_booking_update_script');
-
-
 ?>
