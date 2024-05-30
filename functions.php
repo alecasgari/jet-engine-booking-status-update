@@ -4,6 +4,9 @@ add_action('wp_ajax_update_booking_status_ajax', 'handle_booking_status_update_a
 add_action('wp_ajax_nopriv_update_booking_status_ajax', 'handle_booking_status_update_ajax');
 
 function handle_booking_status_update_ajax() {
+    error_log("AJAX request received"); // Check if AJAX request is received
+error_log("Order ID: " . $order_id); // Check the received order ID
+
     // Security Check (Nonce Verification)
     check_ajax_referer('update_booking_status_nonce', 'security');
 
@@ -42,9 +45,12 @@ function enqueue_booking_update_script() {
 
     // Localize ajaxurl and nonce
     wp_localize_script('booking-update', 'myAjax', array(
-        'ajaxurl' => admin_url('admin-ajax.php', 'relative'),
-        'nonce' => wp_create_nonce('update_booking_status_nonce'), // Add nonce for security
+        'ajaxurl' => admin_url('admin-ajax.php'),  // Remove the 'relative' parameter
+        'nonce' => wp_create_nonce('update_booking_status_nonce'),
     ));
 }
+
 add_action('wp_enqueue_scripts', 'enqueue_booking_update_script');
+
+
 ?>
