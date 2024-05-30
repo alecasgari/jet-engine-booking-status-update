@@ -1,16 +1,16 @@
 jQuery(document).ready(function($) {
-    $('[data-form-id="2705"]').on('submit', function(event) {
+    $('.update-booking-status').on('click', function(event) {
         event.preventDefault();
 
-        var orderId = $(this).find('input[name="order_id"]').val();
+        var orderId = $(this).closest('tr').find('.jet-dynamic-table__col--orderid a').text();
 
         $.ajax({
-            url: myAjax.ajaxurl, // Use the localized ajaxurl
+            url: myAjax.ajaxurl,  // Use the localized ajaxurl
             type: 'POST',
             data: {
                 action: 'update_booking_status_ajax',
                 order_id: orderId,
-                security: myAjax.nonce // Use the localized nonce
+                security: myAjax.nonce 
             },
             success: function(response) {
                 var data = JSON.parse(response); 
